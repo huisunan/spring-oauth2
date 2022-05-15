@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -34,22 +33,32 @@ import java.util.UUID;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@Configuration
+/**
+ * SecurityFilterChain-->对应一套执行拦截链
+ * {@link org.springframework.security.web.FilterChainProxy#getFilters(javax.servlet.http.HttpServletRequest)}
+ * 调用SecurityFilterChain的matches方法，如果对应上则返回对应的拦截器链
+ * {@link org.springframework.security.web.SecurityFilterChain#matches(javax.servlet.http.HttpServletRequest)}
+ * {@link org.springframework.security.config.annotation.web.configuration.HttpSecurityConfiguration#httpSecurity()}
+ * 注入方法中的HttpSecurity是多例的
+ */
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 public class AuthorizationServerConfig {
 
+
     /**
+     *
      * 关闭一些csrf
      */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        return http.formLogin(Customizer.withDefaults()).build();
+        return http.formLogin(withDefaults()).build();
     }
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests.anyRequest().authenticated()//指定任何经过身份验证的用户都允许使用URL。

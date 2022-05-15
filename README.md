@@ -3,19 +3,26 @@
 [RFC6479](https://datatracker.ietf.org/doc/html/rfc6749)
 标准
 
-## oauth2的几种角色
+## oauth2.0的几种角色
 
 - resource owner 资源拥有者
 - resource server 资源服务器
 - client 第三方应用
 - authorization server 认证服务器
 
-## oauth2的几种授权方式
+## oauth2.0的几种授权方式
 
 - 授权码模式
 - 隐式（简化模式）
 - 密码式
 - 凭证式（客户端模式）
+
+## oauth2.1
+- 授权码模式（ Authorization Code + PKCE）
+- ~~隐式（简化模式）~~
+- ~~密码式~~
+- 凭证式（客户端模式）
+- 设备码模式（device grant）
 
 ## spring-authorization-server
 
@@ -40,7 +47,12 @@
 
 ##### 获取授权码
 `http://localhost:8080/oauth2/authorize?client_id=admin&response_type=code&redirect_uri=https://pig4cloud.com`
-
+url中的参数
+```shell
+client_id=admin
+response_type=code
+redirect_uri=https://pig4cloud.com
+```
 会被重定向到login页面，上面输入的url会被保存到session
 ![](doc/code_login.png)
 
@@ -49,8 +61,8 @@
 `https://pig4cloud.com/?code=jmTe07jpMPWBxLwndZL07S9bX8vzp8zRU_f8Lb3WIl0Hm51pTbt4kFndxZyUnK85oIRo54OKHgtwbZkj0ExXJGbpoCyMej2SoZXbEb7BKppzJacNDYEaBpl5vPmNFWBh#/`
 
 客户端使用post方法根据code获取用户token
-
 `http://localhost:8080/oauth2/token`
+
 x-www-form-urlencoded中的值
 ```shell
 grant_type:authorization_code
@@ -68,3 +80,11 @@ client_secret:admin
     "expires_in": 300
 }
 ```
+
+#### 密码模式
+[spring-authorization-server](https://github.com/spring-projects/spring-authorization-server/issues/126)
+不在支持password
+
+有需要可以自己实现
+
+#### 隐式模式
