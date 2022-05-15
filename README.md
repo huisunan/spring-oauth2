@@ -3,6 +3,9 @@
 [RFC6479](https://datatracker.ietf.org/doc/html/rfc6749)
 标准
 
+## 前言
+oauth2作为委托授权服务器，不适合作为身份验证服务器
+
 ## oauth2.0的几种角色
 
 - resource owner 资源拥有者
